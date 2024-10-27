@@ -1,33 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 import "./Login.css";
-import Axios from "axios"; // Import Axios for HTTP requests
 
 // API URL imported from environment variables
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Login: React.FC = () => {
-  // State variables to manage form fields and errors
-  const [email, setEmail] = useState<string>(""); // State to store email
-  const [password, setPassword] = useState<string>(""); // State to store password
-  const [emailError, setEmailError] = useState<string>(""); // State to store email validation error
-  const [loginError, setLoginError] = useState<string>(""); // State to store login error
-  const navigate = useNavigate(); // Hook to navigate between pages
+  // State variables for form fields and errors
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [loginError, setLoginError] = useState<string>("");
+  const navigate = useNavigate();
 
-  // Function to validate email input
+  // Validate email input
   const validateEmail = (email: string) => {
-    // Regular expression for validating an email address
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-      setEmailError("Invalid email address"); // Set error if email is invalid
+      setEmailError("Invalid email address");
     } else {
-      setEmailError(""); // Clear error if email is valid
+      setEmailError("");
     }
   };
 
-  // Function to handle login action
+  // Handle login action
   const handleLogin = async () => {
-    // Validate form inputs before making a request
     if (emailError || !email || !password) {
       setLoginError("Please fill in all fields correctly.");
       return;
@@ -39,13 +37,9 @@ const Login: React.FC = () => {
         email,
         password,
       });
-
-      // Handle successful login
       console.log("Login successful:", response.data);
-      // Redirect user to landing page after successful login
       navigate("/landingpage");
     } catch (error) {
-      // Handle login error and set error message
       console.error("Login error:", error);
       setLoginError("Invalid email or password.");
     }
@@ -60,7 +54,6 @@ const Login: React.FC = () => {
 
       {/* Input fields for email and password */}
       <div className="inputs">
-        {/* Email input */}
         <div className="input-container">
           <label htmlFor="email" className="input-label">
             Email
@@ -72,15 +65,13 @@ const Login: React.FC = () => {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              validateEmail(e.target.value); // Validate email as user types
+              validateEmail(e.target.value);
             }}
             placeholder="Email"
           />
-          {emailError && <span className="error-message">{emailError}</span>}{" "}
-          {/* Display email validation error */}
+          {emailError && <span className="error-message">{emailError}</span>}
         </div>
 
-        {/* Password input */}
         <div className="input-container">
           <label htmlFor="password" className="input-label">
             Password
@@ -96,43 +87,22 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Display login error messages if present */}
+      {/* Display login error messages */}
       {loginError && <div className="error-message">{loginError}</div>}
 
-      {/* Link to Sign Up page */}
-
-      <div className="toggle-action">
-        Don't have an account yet?{" "}
-        <span
-          onClick={() => navigate("/signup")} // Redirect to Sign Up page
-          style={{
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Click Here
-        </span>
+      <div className="toggle-action" style={{ textDecoration: "none" }}>
+        First time? Sign up now{" "}
+        <span onClick={() => navigate("/signup")}>Click Here</span>
       </div>
 
-      {/* Link to Lost Password page */}
-      <div className="forgot-password">
-        Lost Password?{" "}
-        <span
-          onClick={() => navigate("/lost-password")} // Redirect to Lost Password page
-          style={{
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Click Here
-        </span>
+      <div className="forgot-password" style={{ textDecoration: "none" }}>
+        Forget Password?{" "}
+        <span onClick={() => navigate("/lost-password")}>Click Here</span>
       </div>
 
       {/* Login button */}
       <div className="submit-container">
-        <div className="submit" onClick={() => {}}>
+        <div className="submit" onClick={handleLogin}>
           Login
         </div>
       </div>

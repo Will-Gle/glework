@@ -8,62 +8,52 @@ import "react-datepicker/dist/react-datepicker.css";
 import Axios from "axios"; // Import Axios for HTTP requests
 
 const Signup: React.FC = () => {
-  // State variables to manage form fields
-  const [firstName, setFirstName] = useState<string>(""); // State for first name
-  const [lastName, setLastName] = useState<string>(""); // State for last name
-  const [dob, setDob] = useState<Date | null>(null); // State for date of birth
-  const [phone, setPhone] = useState<string>(""); // State for phone number
-  const [email, setEmail] = useState<string>(""); // State for email
-  const [password, setPassword] = useState<string>(""); // State for password
-  const [emailError, setEmailError] = useState<string>(""); // State for email validation error
-  const [confirmationMessage, setConfirmationMessage] = useState<string>(""); // State for registration confirmation message
+  // State variables for managing form fields
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [dob, setDob] = useState<Date | null>(null);
+  const [phone, setPhone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [confirmationMessage, setConfirmationMessage] = useState<string>("");
 
-  const navigate = useNavigate(); // Hook to navigate between pages
-
-  // Get the API URL from environment variables
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL; // Get the API URL from environment variables
 
   // Function to validate the email address input
-
   const validateEmail = (email: string) => {
-    // Regular expression for validating email format
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-      setEmailError("Invalid email address"); // Set error if email is invalid
+      setEmailError("Invalid email address");
     } else {
-      setEmailError(""); // Clear error if email is valid
+      setEmailError("");
     }
   };
 
   // Function to handle user registration
   const register = () => {
-    // Make a POST request to the server using Axios to register a new user
     Axios.post(`${apiUrl}/users`, {
       firstName,
       lastName,
-      phoneNumber: `+${phone.replace(/^0/, "")}`, // Format phone number
-      dateOfBirth: dob ? dob.toISOString().split("T")[0] : null, // Format date of birth as YYYY-MM-DD
+      phoneNumber: `+${phone.replace(/^0/, "")}`,
+      dateOfBirth: dob ? dob.toISOString().split("T")[0] : null,
       email,
       password,
     })
       .then((response) => {
-        // Handle successful response
-        console.log(response);
         if (response.data.isConfirmed === 1) {
-          // If registration is confirmed, show a success message
           setConfirmationMessage(
             "Registration successful! A confirmation email has been sent to your email address. Please check your inbox."
           );
         } else {
-          // If registration is pending, show a pending message
           setConfirmationMessage(
             "Your registration is pending confirmation. Please check your email to confirm your account."
           );
         }
       })
       .catch((error) => {
-        // Handle errors during registration
-        console.error("An error occurred during registration:", error);
+        console.error("An error occurred:", error); // In ra lỗi để biết thêm chi tiết
         setConfirmationMessage(
           "An error occurred during registration. Please try again later."
         );
@@ -72,15 +62,12 @@ const Signup: React.FC = () => {
 
   return (
     <div className="container">
-      {/* Header for the Signup page */}
       <div className="header">
         <div className="text">Sign Up</div>
         <div className="underline"></div>
       </div>
 
-      {/* Form fields for signup */}
       <div className="inputs">
-        {/* First name input field */}
         <div className="input-container">
           <label htmlFor="firstName" className="input-label">
             First Name
@@ -95,7 +82,6 @@ const Signup: React.FC = () => {
           />
         </div>
 
-        {/* Last name input field */}
         <div className="input-container">
           <label htmlFor="lastName" className="input-label">
             Last Name
@@ -110,7 +96,6 @@ const Signup: React.FC = () => {
           />
         </div>
 
-        {/* Date of birth input field */}
         <div className="input-container">
           <label htmlFor="dateOfBirth" className="input-label">
             Date of Birth
@@ -125,7 +110,6 @@ const Signup: React.FC = () => {
           />
         </div>
 
-        {/* Phone number input field */}
         <div className="input-container">
           <label htmlFor="phoneNumber" className="input-label">
             Phone Number
@@ -139,7 +123,6 @@ const Signup: React.FC = () => {
           />
         </div>
 
-        {/* Email input field */}
         <div className="input-container">
           <label htmlFor="email" className="input-label">
             Email
@@ -155,11 +138,9 @@ const Signup: React.FC = () => {
             }}
             placeholder="Email"
           />
-          {/* Display email validation error if present */}
           {emailError && <span className="error-message">{emailError}</span>}
         </div>
 
-        {/* Password input field */}
         <div className="input-container">
           <label htmlFor="password" className="input-label">
             Password
@@ -175,30 +156,17 @@ const Signup: React.FC = () => {
         </div>
       </div>
 
-      {/* Show confirmation message if available */}
       {confirmationMessage && (
         <div className="confirmation-message">{confirmationMessage}</div>
       )}
 
-      {/* Link to navigate to the login page */}
-
-      <div className="toggle-action">
+      <div className="toggle-action" style={{ textDecoration: "none" }}>
         Already have an account?{" "}
-        <span
-          onClick={() => navigate("/login")}
-          style={{
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Click Here
-        </span>
+        <span onClick={() => navigate("/login")}>Click Here</span>
       </div>
 
-      {/* Button to register new account */}
       <div className="submit-container">
-        <div className="submit" onClick={() => {}}>
+        <div className="submit" onClick={register}>
           Sign Up
         </div>
       </div>
