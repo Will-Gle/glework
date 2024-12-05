@@ -19,8 +19,7 @@ const OrderDetail: React.FC = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       if (!orderId) {
-        // console.error("Order ID is undefined");
-        return; // Ngừng thực hiện nếu orderId không hợp lệ
+        return;
       }
       try {
         const response = await fetch(

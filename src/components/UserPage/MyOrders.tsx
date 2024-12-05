@@ -78,8 +78,8 @@ const MyOrders: React.FC = () => {
   return (
     <div className="my-orders-container">
       <h1>My Orders</h1>
-      <div className="orders-table">
-        <div className="table-header">
+      <div className="user-orders-table">
+        <div className="user-order-table-header">
           <div>Order</div>
           <div>Date</div>
           <div>Address</div>
@@ -94,7 +94,7 @@ const MyOrders: React.FC = () => {
           )
           .map((order, index) => (
             <div
-              className="table-row"
+              className="user-order-table-row"
               key={index}
               onClick={() => handleOrderClick(order)}
             >

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import apiService from "../apiService";
 import "./MyAccount.css"; // Add your styles
-// API URL imported from environment variables
-const apiUrl = import.meta.env.VITE_API_URL;
 
 interface User {
   id: string;
@@ -44,111 +43,32 @@ const MyAccount: React.FC = () => {
   }, []);
 
   const fetchUserId = async () => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      try {
-        const response = await fetch(`${apiUrl}/auth/auth-check`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          //   console.log("User Data:", userData); // Debugging line
-
-          // Access the user ID correctly
-          const userId = userData.user.id; // Adjusted to access the user ID
-          localStorage.setItem("userId", userId); // Store user ID in local storage
-          fetchUserData(); // Fetch user data after storing user ID
-        } else {
-          setMessage("Failed to fetch user ID.");
-        }
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
-        setMessage("Error fetching user ID.");
-      }
-    } else {
-      setMessage("Token is missing.");
-    }
-  };
-
-  const fetchUserData = async () => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    console.log("Fetched User ID:", userId); // Debugging line
-
-    if (token && userId) {
-      try {
-        const response = await fetch(`${apiUrl}/users/${userId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const savedUser = await response.json();
-        setFormData({
-          id: savedUser.id,
-          firstName: savedUser.firstName,
-          lastName: savedUser.lastName,
-          phoneNumber: savedUser.phoneNumber,
-          email: savedUser.email,
-          dateOfBirth: savedUser.dateOfBirth,
-          address: savedUser.address,
-          city: savedUser.city,
-        });
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setMessage("Không thể lấy thông tin người dùng.");
-      }
-    } else {
-      setMessage("Token or User ID is missing.");
+    try {
+      const data = await apiService.get("auth/user");
+      setFormData(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
   };
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   // Handle form submission
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const token = localStorage.getItem("token"); // Get token from localStorage
-      // Send a PUT request to update user information
-      const response = await fetch(
-        `${apiUrl}/users/${formData.id}`, // Use user ID for the update
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Use token for authorization
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (response.ok) {
-        setMessage("Thông tin đã được cập nhật thành công!");
-        fetchUserData(); // Fetch updated user data
-      } else {
-        setMessage("Có lỗi xảy ra. Vui lòng thử lại!");
-      }
-
-      // Reset the message after a few seconds
-      setTimeout(() => setMessage(""), 3000);
+      await apiService.put(`auth/user`, formData);
+      setMessage("Profile updated successfully!");
     } catch (error) {
-      console.error("Error updating information:", error);
-      setMessage("Có lỗi xảy ra. Vui lòng thử lại!");
+      console.error("Error updating profile:", error);
+      setMessage("Failed to update profile.");
     }
   };
 

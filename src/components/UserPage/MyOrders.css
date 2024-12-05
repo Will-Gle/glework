@@ -11,37 +11,37 @@
     margin-bottom: 20px;
   }
   
-  .orders-table {
+  .user-orders-table {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   
-  .table-header,
-  .table-row {
+  .user-order-table-header,
+  .user-order-table-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 1fr 2fr 2fr;
+    grid-template-columns: 15% 10% 40% 10% 12% 12%;
     gap: 10px;
     padding: 10px;
     background-color: #f3f3f3;
     border-radius: 4px;
   }
   
-  .table-header {
+  .user-order-table-header {
     font-weight: bold;
     background-color: #e0e0e0;
   }
   
-  .table-row {
+  .user-order-table-row {
     transition: background-color 0.2s ease;
   }
   
-  .table-row:hover {
+  .user-order-table-row:hover {
     background-color: #dcdcdc;
   }
   
-  .table-header div,
-  .table-row div {
+  .user-order-table-header div,
+  .user-order-table-row div {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

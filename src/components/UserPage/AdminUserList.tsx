@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import apiService from "../apiService"; // Import apiService for API calls
 import "./AdminUserList.css";
-
-const apiUrl = import.meta.env.VITE_API_URL;
 
 interface User {
   id: string;
@@ -31,38 +30,21 @@ const AdminUserList: React.FC = () => {
   const [filterRole, setFilterRole] = useState("");
   const [filterCreatedAt, setFilterCreatedAt] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
+  const navigate = useNavigate();
 
   // Fetching users
-  const fetchAllUsers = async () => {
-    const token = localStorage.getItem("token");
-    if (token) {
+  useEffect(() => {
+    const fetchAllUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/users`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUsers(userData);
-          setFilteredUsers(userData);
-        } else {
-          const errorResponse = await response.json();
-          setMessage(`Failed to fetch users: ${errorResponse.message}`);
-        }
+        const userData = await apiService.get("users");
+        setUsers(userData);
+        setFilteredUsers(userData);
       } catch (error) {
         console.error("Error fetching users:", error);
         setMessage("An unexpected error occurred while fetching users.");
       }
-    } else {
-      setMessage("Token is missing.");
-    }
-  };
+    };
 
-  useEffect(() => {
     fetchAllUsers();
   }, []);
 
@@ -92,7 +74,7 @@ const AdminUserList: React.FC = () => {
 
   // Email confirmation
   const checkUserConfirm = (isConfirmed: number) => {
-    return isConfirmed === 1 ? "Yes" : "No";
+    return isConfirmed === 1 ? "No" : "Yes";
   };
 
   return (

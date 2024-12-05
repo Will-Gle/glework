@@ -68,11 +68,12 @@ h1 {
 
 .user-table-header div,
 .user-table-row div {
-  text-align: center;
-  font-size: 14px; 
-  white-space: nowrap; /* Prevent text wrapping */
-  overflow: hidden; /* Hide overflow text */
-  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  text-align: -webkit-left;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-inline: 10px;
 }
 
 .user-table-row:hover {
